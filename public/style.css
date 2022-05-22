@@ -1,0 +1,90 @@
+.bg-whitesmoke {
+    background-color: #f4f3f3;
+}
+
+.nav {
+    height: 7vh;
+}
+
+.card-container {
+    background-color: rgb(226,230,234);
+    position: relative;
+}
+
+.project-container {
+    position: relative;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.text-only {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.socmed-icon {
+    color: black;
+    padding: 5px;
+}
+
+.techs i {
+    font-size: 35px;
+    padding: 5px;
+}
+
+.container-contact-form {
+    background-color: rgb(226,230,234);
+    position: relative;
+}
+
+.container-contact-form form {
+    width: 430px;
+}
+
+.container-contact-form form input,
+textarea, select, .input-group-text {
+  border: 0;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
+}
+
+.container-contact-form form label {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.container-project-form {
+    background-color: rgb(226,230,234);
+    position: relative;
+}
+
+.container-project-form form {
+    width: 430px;
+}
+
+.container-project-form form input,
+textarea, select {
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container-project-form form label {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* input[type="date"]::-webkit-calendar-picker-indicator {
+    display: block;
+} */
+
+/* .transparent {
+    background-color: white;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+ }
+
+ .right-border-none {
+    border-left: none !important;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+ } */
