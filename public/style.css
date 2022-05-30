@@ -6,9 +6,21 @@
     height: 7vh;
 }
 
+.btn-auth {
+    font-size: 15px;
+    padding: 8px 20px;
+    color: rgb(72, 72, 72);
+    text-decoration: none;
+    background-color: #ec4c3700;
+  }
+
+.success-container {
+    background-color: rgb(226,230,234);
+}
+
 .card-container {
     background-color: rgb(226,230,234);
-    position: relative;
+    height: 92vh;
 }
 
 .project-container {
@@ -36,7 +48,7 @@
 
 .container-contact-form {
     background-color: rgb(226,230,234);
-    position: relative;
+    height: 92vh;
 }
 
 .container-contact-form form {
@@ -57,7 +69,7 @@ textarea, select, .input-group-text {
 
 .container-project-form {
     background-color: rgb(226,230,234);
-    position: relative;
+    height: 92vh;
 }
 
 .container-project-form form {
@@ -73,6 +85,24 @@ textarea, select {
 .container-project-form form label {
     font-weight: 700;
     font-size: 18px;
+}
+
+.project-title {
+    text-decoration: none;
+}
+
+.techs-list h4 {
+  color: rgb(104, 100, 100);
+  font-weight: 600;
+}
+
+.techs-list ul {
+  width: 300px;
+}
+
+.techs-list ul li {
+  width: 100px;
+  display: inline-block;
 }
 
 /* input[type="date"]::-webkit-calendar-picker-indicator {

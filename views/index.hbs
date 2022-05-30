@@ -14,7 +14,7 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="public/style.css" />
-    <title>Day 1 - Creating View with Bootstrap</title>
+    <title>Day 6 - Auth Session and Flash Message</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-whitesmoke">
@@ -42,17 +42,34 @@
                 href="#"
               >Home</a>
             </li>
+            {{#if isLogin}}
             <li class="nav-item fw-semibold">
               <a class="nav-link text-dark" href="/add-project">Add Project</a>
             </li>
+            {{/if}}
           </ul>
+          <div class="d-flex">
+          {{#if isLogin}}
+            <span style="padding-top:7px" class="fw-semibold">Hi! {{user.name}},</span>
+            <a href='/logout' class='btn-auth fw-semibold text-dark'> Logout </a>
+          {{else}}
+            <a href='/register' class='btn-auth fw-semibold  text-dark'> Register </a>
+            <a href='/login' style='padding-right: 60px;' class='btn-auth fw-semibold'> Login </a>
+          {{/if}}
           <a class="btn btn-dark text-white fw-semibold" href="/contact-me">
             Contact Me
           </a>
+         </div>
         </div>
       </div>
     </nav>
     <!-- End Navbar -->
+
+      {{#if messages.success}}
+        <div class='alert alert-success w-100 m-0' role='alert'>
+          {{{messages.success}}}
+        </div>
+      {{/if}}
 
     <!-- Personal Card -->
     <div
@@ -128,98 +145,38 @@
       <h2 class="mt-3 fw-bold mb-3">MY PROJECT</h2>
       <div class="container">
         <div class="row">
+          {{#each projects}}
           <div class="col-md-4 col-sm-6 mb-3">
             <div class="card shadow border-0 p-2" style="width: 100%">
               <img src="public/assets/img1.jpg" class="card-img" alt="..." />
               <div class="card-body">
-                <h5 class="card-title">Dumbways Mobile App</h5>
-                <h6 class="card-subtitle mb-3 text-muted">Durasi: 3 bulan</h6>
-                <p class="card-text text-justify">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Deleniti voluptas itaque ad magni asperiores harum labore,
-                  necessitatibus libero optio officiis? Quos aspernatur quae
-                  mollitia, quas tenetur amet dolor nostrum ad?
+                <a class="project-title text-dark" href="/detail-project/{{this.id}}"><h5 class="card-title">{{this.name}}</h5></a>
+                <h6 class="card-subtitle mb-3 text-muted">{{this.duration}}</h6>
+                <p class="card-text text-justify text-truncate">
+                  {{this.description}}
                 </p>
                 <div class="techs mb-3">
-                  <i class="fa-brands fa-js"></i>
-                  <i class="fa-brands fa-css3"></i>
-                  <i class="fa-brands fa-html5"></i>
+                  {{#if this.technologies.[0]}} <i class="fa-brands fa-html5"></i> {{/if}}
+                  {{#if this.technologies.[1]}} <i class="fa-brands fa-js"></i> {{/if}}
+                  {{#if this.technologies.[2]}} <i class="fa-brands fa-css3"></i> {{/if}}
+                  {{#if this.technologies.[3]}} <i class="fa-brands fa-php"></i> {{/if}}
                 </div>
+                {{#if this.isLogin}}
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                   <a
-                    href="#"
+                    href="edit-project/{{this.id}}"
                     class="btn btn-dark text-white nav-justified flex-fill"
                   >Edit</a>
                   <a
-                    href="#"
+                    href="delete-project/{{this.id}}"
                     class="btn btn-dark text-white nav-justified flex-fill"
                   >Delete</a>
                 </div>
+                {{/if}}
               </div>
             </div>
           </div>
-          <div class="col-md-4 col-sm-6 mb-3">
-            <div class="card shadow border-0 p-2" style="width: 100%">
-              <img src="public/assets/img1.jpg" class="card-img" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Dumbways Mobile App</h5>
-                <h6 class="card-subtitle mb-3 text-muted">Durasi: 3 bulan</h6>
-                <p class="card-text text-justify">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Deleniti voluptas itaque ad magni asperiores harum labore,
-                  necessitatibus libero optio officiis? Quos aspernatur quae
-                  mollitia, quas tenetur amet dolor nostrum ad?
-                </p>
-                <div class="techs mb-3">
-                  <i class="fa-brands fa-js"></i>
-                  <i class="fa-brands fa-css3"></i>
-                  <i class="fa-brands fa-html5"></i>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                  <a
-                    href="#"
-                    class="btn btn-dark text-white nav-justified flex-fill"
-                  >Edit</a>
-                  <a
-                    href="#"
-                    class="btn btn-dark text-white nav-justified flex-fill"
-                  >Delete</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 col-sm-6 mb-3">
-            <div class="card shadow border-0 p-2" style="width: 100%">
-              <img src="public/assets/img1.jpg" class="card-img" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Dumbways Mobile App</h5>
-                <h6 class="card-subtitle mb-3 text-muted">Durasi: 3 bulan</h6>
-                <p class="card-text text-justify">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Deleniti voluptas itaque ad magni asperiores harum labore,
-                  necessitatibus libero optio officiis? Quos aspernatur quae
-                  mollitia, quas tenetur amet dolor nostrum ad?
-                </p>
-                <div class="techs mb-3">
-                  <i class="fa-brands fa-js"></i>
-                  <i class="fa-brands fa-css3"></i>
-                  <i class="fa-brands fa-html5"></i>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                  <a
-                    href="#"
-                    class="btn btn-dark text-white nav-justified flex-fill"
-                  >Edit</a>
-                  <a
-                    href="#"
-                    class="btn btn-dark text-white nav-justified flex-fill"
-                  >Delete</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
+       {{/each}}
         </div>
       </div>
     </div>

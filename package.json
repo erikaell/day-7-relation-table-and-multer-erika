@@ -1,23 +1,28 @@
 {
-  "name": "day1-creating-view-with-bootstrap",
+  "name": "day4-data-modelling",
   "version": "1.0.0",
-  "description": "",
+  "description": "personal web",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erikaell/day-1-creating-view-with-bootstrap-erika.git"
+    "url": "git+https://github.com/erikaell/day-2-creating-routing-and-post-method-erika.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/erikaell/day-1-creating-view-with-bootstrap-erika/issues"
+    "url": "https://github.com/erikaell/day-2-creating-routing-and-post-method-erika/issues"
   },
-  "homepage": "https://github.com/erikaell/day-1-creating-view-with-bootstrap-erika#readme",
+  "homepage": "https://github.com/erikaell/day-2-creating-routing-and-post-method-erika#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.18.1",
-    "hbs": "^4.2.0"
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "flash": "^1.1.0",
+    "hbs": "^4.2.0",
+    "pg": "^8.7.3"
   }
 }

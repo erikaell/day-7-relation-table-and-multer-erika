@@ -38,17 +38,24 @@
             <li class="nav-item fw-semibold">
               <a class="nav-link me-3 text-dark" href="/">Home</a>
             </li>
+            {{#if isLogin}}
             <li class="nav-item fw-semibold">
               <a class="nav-link text-dark" href="/add-project">Add Project</a>
             </li>
+            {{/if}}
           </ul>
-          <a
-            class="btn btn-dark active text-white fw-bold"
-            aria-current="page"
-            href="#"
-          >
+          <div class="d-flex">
+          {{#if isLogin}}
+            <span style="padding-top:7px" class="fw-semibold">Hi! {{user.name}},</span>
+            <a href='/logout' class='btn-auth fw-semibold text-dark'> Logout </a>
+          {{else}}
+            <a href='/register' class='btn-auth fw-semibold text-dark'> Register </a>
+            <a href='/login' style='padding-right: 60px;' class='btn-auth fw-semibold'> Login </a>
+          {{/if}}
+          <a class="btn btn-dark text-white active fw-semibold" href="/contact-me">
             Contact Me
           </a>
+          </div>
         </div>
       </div>
     </nav>

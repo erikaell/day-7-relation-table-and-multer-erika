@@ -13,14 +13,14 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="public/style.css" />
+    <link rel="stylesheet" href="/public/style.css" />
     <title>Add-Project</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-whitesmoke">
       <div class="container">
         <a class="navbar-brand me-5" href="#">
-          <img src="public/assets/logo.png" alt="" />
+          <img src="/public/assets/logo.png" alt="" />
         </a>
         <button
           class="navbar-toggler"
@@ -46,9 +46,18 @@
               >Add Project</a>
             </li>
           </ul>
-          <a class="btn btn-dark text-white fw-semibold" href="/contact-me">
+          <div class="d-flex">
+          {{#if isLogin}}
+            <span style="padding-top:7px" class="fw-semibold">Hi! {{user.name}},</span>
+            <a href='/logout' class='btn-auth fw-semibold text-dark'> Logout </a>
+          {{else}}
+            <a href='/register' class='btn-auth fw-semibold text-dark'> Register </a>
+            <a href='/login' style='padding-right: 60px;' class='btn-auth fw-semibold'> Login </a>
+          {{/if}}
+          <a class="btn btn-dark text-white" href="/contact-me">
             Contact Me
           </a>
+          </div>
         </div>
       </div>
     </nav>
@@ -57,7 +66,7 @@
     <div
       class="container-project-form d-flex justify-content-center align-items-center bg-whitesmoke pb-5"
     >
-      <form action="add-project" class="m-0" method="POST">
+        <form action="add-project" class="m-0" method="POST">
         <h2 class="text-center mb-3 mt-3 fw-bold">ADD MY PROJECT</h2>
         <div class="mb-3">
           <label for="input-project-name" class="form-label">Project Name</label>
@@ -65,7 +74,7 @@
             type="text"
             class="form-control"
             id="input-project-name"
-            name="project-name"
+            name="name"
             placeholder="Write here ..."
           />
         </div>
@@ -76,7 +85,7 @@
               type="date"
               class="form-control"
               id="input-start-date"
-              name="project-start-date"
+              name="startDate"
             />
           </div>
           <div class="col-md-6">
@@ -85,7 +94,7 @@
               type="date"
               class="form-control"
               id="input-end-date"
-              name="project-end-date"
+              name="endDate"
             />
           </div>
         </div>
@@ -94,7 +103,7 @@
           <textarea
             class="form-control"
             id="input-description"
-            name="project-description"
+            name="description"
             rows="3"
             placeholder="Write here ..."
           ></textarea>
@@ -106,8 +115,7 @@
               <label class="text-muted">
                 <input
                   type="checkbox"
-                  name="project-technologies"
-                  value="<i class='fa-brands fa-html5'></i>"
+                  name="html"
                   id="html"
                 />
                 <span>HTML</span>
@@ -117,8 +125,7 @@
               <label class="text-muted">
                 <input
                   type="checkbox"
-                  name="project-technologies"
-                  value="<i class='fa-brands fa-css3'></i>"
+                  name="css"
                   id="css"
                 />
                 <span>CSS</span>
@@ -128,8 +135,7 @@
               <label class="text-muted">
                 <input
                   type="checkbox"
-                  name="project-technologies"
-                  value="<i class='fa-brands fa-js'></i>"
+                  name="javascript"
                   id="javascript"
                 />
                 <span>Javascript</span>
@@ -139,8 +145,7 @@
               <label class="text-muted">
                 <input
                   type="checkbox"
-                  name="project-technologies"
-                  value="<i class='fa-brands fa-php'></i>"
+                  name="php"
                   id="php"
                 />
                 <span>PHP</span>
@@ -154,7 +159,7 @@
             class="form-control"
             type="file"
             id="input-image"
-            name="project-image"
+            name="image"
           />
         </div>
         <div class="text-end mt-3">
