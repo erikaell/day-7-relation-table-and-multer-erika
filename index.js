@@ -4,21 +4,27 @@ const session = require('express-session');
 const flash = require('express-flash');
 
 const db = require('./connection/db');
+const upload = require('./middlewares/uploadFile');
+const nodemailer = require('nodemailer');
+const xoauth2 = require('xoauth2');
 
 const app = express();
 const PORT = 6500;
 
-// const isLogin = true;
 
 app.set("view engine", "hbs"); //setup template engine / view engine
 
-// db.connect(function (err, _, done){
-//   if (err) throw err;
-//   console.log('Database Connection Success');
-//   done();
-// })
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'erikaelliyyin2108@gmail.com',
+    pass: 'acsf ghjf zbak sudp'
+  }
+});
+
 
 app.use("/public", express.static(__dirname + "/public"));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -39,7 +45,22 @@ app.get("/", (req, res) => {
   db.connect(function (err, client, done){
     if (err) throw err;
 
-    const query = 'SELECT * FROM tb_projects';
+    let query = '';
+
+    if (req.session.isLogin == true) {
+      query = `SELECT tb_projects.*, tb_user.id as "user_id", tb_user.user_name, tb_user.email
+      FROM tb_projects
+      LEFT JOIN tb_user
+      ON tb_projects.user_id = tb_user.id 
+      WHERE tb_projects.user_id = ${req.session.user.id}
+      ORDER BY tb_projects.id DESC`;
+    } else {
+      query = `SELECT tb_projects.*, tb_user.id as "user_id", tb_user.user_name, tb_user.email
+      FROM tb_projects
+      LEFT JOIN tb_user
+      ON tb_projects.user_id = tb_user.id
+      ORDER BY tb_projects.id DESC`;
+    }
 
     client.query(query, function(err,result){
       if (err) throw err;
@@ -49,6 +70,10 @@ app.get("/", (req, res) => {
       const newProject = projectsData.map((project)=>{
         project.duration = getDistanceTime(project.end_date,project.start_date);
         project.isLogin = req.session.isLogin;
+        project.user_name = project.user_name ? project.user_name : '-';
+        project.image = project.image
+        ? '/uploads/' + project.image
+        : '/public/assets/project-img.jpg';
         return project;
       });
 
@@ -69,22 +94,44 @@ app.get("/contact-me", (req, res) => {
   res.render("contact-me", { isLogin: req.session.isLogin, user: req.session.user, });
 });
 
-app.get("/add-project", (req, res) => {
-  res.render("add-project", { isLogin: req.session.isLogin, user: req.session.user, });
-});
-
 app.post("/contact-me", (req, res) => {
   const data = req.body;
   // console.log(data);
+  let mailOptions = {
+    from: 'erikaelliyyin2108@gmail.com',
+    to: data["email"],
+    subject: data["subject"],
+    text: data["message"],
+  };
 
-  res.redirect("/contact-me");
+  transporter.sendMail(mailOptions, function(e) {
+    if (e) {
+      console.log(e);
+    }
+    else {
+      req.flash('success', 'Your message has been sent successfully.');
+      res.redirect("/contact-me");
+      console.log(r);
+        }
+    });
 });
 
-app.post("/add-project", (req, res) => {
+
+app.get("/add-project", (req, res) => {
+  if (req.session.isLogin != true) {
+    req.flash('warning', 'Please Login...');
+    return res.redirect('/');
+  }
+  res.render("add-project", { isLogin: req.session.isLogin, user: req.session.user, });
+});
+
+app.post("/add-project", upload.single('image'), (req, res) => {
   const name = req.body.name;
   const start_date = req.body.startDate;
   const end_date = req.body.endDate;
   const description = req.body.description;
+  const userId = req.session.user.id;
+  const fileName = req.file.filename;
   const technologies = [];
   if(req.body.html){
     technologies.push('html');
@@ -106,12 +153,11 @@ app.post("/add-project", (req, res) => {
   } else {
     technologies.push('');
   }
-  const image = req.body.image;
 
   db.connect(function (err, client, done) {
     if (err) throw err;
 
-    const query = `INSERT INTO tb_projects(name,start_date,end_date,description,technologies,image) VALUES('${name}','${start_date}','${end_date}','${description}', ARRAY ['${technologies[0]}','${technologies[1]}','${technologies[2]}','${technologies[3]}'],'${image}');`;
+    const query = `INSERT INTO tb_projects(name,start_date,end_date,description,technologies,image,user_id) VALUES('${name}','${start_date}','${end_date}','${description}', ARRAY ['${technologies[0]}','${technologies[1]}','${technologies[2]}','${technologies[3]}'],'${fileName}','${userId}');`;
 
     client.query(query, function (err, result) {
       if (err) throw err;
@@ -141,17 +187,15 @@ app.get("/delete-project/:id", (req, res) => {
   });
 });
 
-// app.get("/edit-project/:index", (req, res) => {
-//   const index = req.params.index;
-//   let project = projects[index];
-
-//   res.render("edit-project", { data: index, project });
-// });
-
 app.get("/edit-project/:id", (req, res) => {
   const id = req.params.id;
 
   db.connect(function (err, client, done) {
+    if (req.session.isLogin != true) {
+      req.flash('warning', 'Please Login...');
+      return res.redirect('/');
+    }
+
     if (err) throw err;
     const query = `SELECT * FROM tb_projects WHERE id = ${id}`;
 
@@ -161,6 +205,9 @@ app.get("/edit-project/:id", (req, res) => {
       const project = result.rows[0];
       project.startdate = formattedTime(project.start_date);
       project.enddate = formattedTime(project.end_date);
+      project.image = project.image
+      ? '/uploads/' + project.image
+      : '/public/assets/project-img.jpg';
 
       console.log(project);
       res.render('edit-project', { project, id, isLogin: req.session.isLogin, user: req.session.user, });
@@ -175,7 +222,11 @@ app.get("/detail-project/:id", (req, res) => {
 
   db.connect(function (err, client, done) {
     if (err) throw err;
-    const query = `SELECT * FROM tb_projects WHERE id = ${id}`;
+    const query = `SELECT tb_projects.*, tb_user.id as "user_id", tb_user.user_name, tb_user.email
+                  FROM tb_projects
+                  LEFT JOIN tb_user
+                  ON tb_projects.user_id = tb_user.id
+                  WHERE tb_projects.id = ${id}`;
 
     client.query(query, function (err, result) {
       if (err) throw err;
@@ -185,6 +236,9 @@ app.get("/detail-project/:id", (req, res) => {
       project.startDateNew = getFullTime(project.start_date);
       project.endDateNew = getFullTime(project.end_date);
       project.duration = getDistanceTime(project.end_date, project.start_date)
+      project.image = project.image
+      ? '/uploads/' + project.image
+      : '/public/assets/project-img.jpg';
 
       res.render('detail-project', { project, isLogin: req.session.isLogin, user: req.session.user, });
     });
@@ -193,27 +247,14 @@ app.get("/detail-project/:id", (req, res) => {
   });
 });
 
-// app.post("/edit-project/:index", (req, res) => {
-//   const data = req.body;
-
-//   projects[req.params.index] = {
-//     name: data["name"],
-//     startDate: data["startDate"],
-//     endDate: data["endDate"],
-//     image: data["image"],
-//     description: data["description"],
-//     technologies: data["technologies"],
-//     duration: getDistanceTime(data["endDate"], data["startDate"]),
-//     startDateNew: getFullTime(data["startDate"]),
-//     endDateNew: getFullTime(data["endDate"])
-//   };
-
 app.post("/edit-project/:id", (req, res) => {
   id = req.params.id;
   const name = req.body.name;
   const start_date = req.body.startDate;
   const end_date = req.body.endDate;
   const description = req.body.description;
+  const userId = req.session.user.id;
+  const fileName = req.file.filename;
   const technologies = [];
   if(req.body.html){
     technologies.push('html');
@@ -235,12 +276,11 @@ app.post("/edit-project/:id", (req, res) => {
   } else {
     technologies.push('');
   }
-  const image = req.body.image;
 
   db.connect(function (err, client, done) {
     if (err) throw err;
 
-    const query = `UPDATE tb_projects SET name='${name}',start_date='${start_date}',end_date='${end_date}',description='${description}',technologies=ARRAY ['${technologies[0]}','${technologies[1]}','${technologies[2]}','${technologies[3]}'],image='${image}' WHERE id='${id}';`;
+    const query = `UPDATE tb_projects SET name='${name}',start_date='${start_date}',end_date='${end_date}',description='${description}',technologies=ARRAY ['${technologies[0]}','${technologies[1]}','${technologies[2]}','${technologies[3]}'],image='${fileName}',user_id='${userId}' WHERE id='${id}';`;
 
     client.query(query, function (err, result) {
       if (err) throw err;
@@ -266,7 +306,7 @@ app.post('/register', (req, res) => {
   db.connect(function (err, client, done) {
     if (err) throw err;
 
-    const query = `INSERT INTO tb_user(name,email,password) 
+    const query = `INSERT INTO tb_user(user_name,email,password) 
                     VALUES('${name}','${email}','${password}');`;
 
     client.query(query, function (err, result) {
@@ -322,7 +362,7 @@ app.post('/login', (req, res) => {
       req.session.user = {
         id: data[0].id,
         email: data[0].email,
-        name: data[0].name,
+        name: data[0].user_name,
       };
 
       req.flash('success', `Welcome, <b>${data[0].email}</b>`);
@@ -407,19 +447,3 @@ function getDistanceTime(time1, time2) {
   }
 }
 
-// app.get('/detail-blog/:index', (req, res) => {
-//   const index = req.params.index;
-
-//   res.render('blog-detail', { data: index, number: '2022' });
-// });
-
-// app.get('/contact', (req, res) => {
-//   res.render('contact');
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port: ${PORT}`);
-// });
-
-// Backend = 5000 etc
-// Frontend = 3000 etc

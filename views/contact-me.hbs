@@ -66,6 +66,11 @@
     >
       <form action="/contact-me" class="m-0" method="POST">
         <h2 class="text-center mb-3 mt-3 fw-bold">GET IN TOUCH</h2>
+      {{#if messages.success}}
+        <div class='alert alert-success w-100 m-0' role='alert'>
+          {{{messages.success}}}
+        </div>
+      {{/if}}
         <div class="mb-3">
           <label for="input-name" class="form-label">Name</label>
           <input

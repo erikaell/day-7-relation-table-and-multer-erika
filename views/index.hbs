@@ -14,7 +14,7 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="public/style.css" />
-    <title>Day 6 - Auth Session and Flash Message</title>
+    <title>Day 7 - Relation Table and Multer - Finish</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-whitesmoke">
@@ -64,6 +64,12 @@
       </div>
     </nav>
     <!-- End Navbar -->
+
+      {{#if messages.warning}}
+        <div class='alert alert-warning w-100 m-0' role='alert'>
+          {{{messages.warning}}}
+        </div>
+      {{/if}}
 
       {{#if messages.success}}
         <div class='alert alert-success w-100 m-0' role='alert'>
@@ -148,12 +154,15 @@
           {{#each projects}}
           <div class="col-md-4 col-sm-6 mb-3">
             <div class="card shadow border-0 p-2" style="width: 100%">
-              <img src="public/assets/img1.jpg" class="card-img" alt="..." />
+              <img src="{{this.image}}" class="card-img" alt="..." />
               <div class="card-body">
                 <a class="project-title text-dark" href="/detail-project/{{this.id}}"><h5 class="card-title">{{this.name}}</h5></a>
                 <h6 class="card-subtitle mb-3 text-muted">{{this.duration}}</h6>
                 <p class="card-text text-justify text-truncate">
                   {{this.description}}
+                </p>
+                <p class="card-text text-muted">
+                  Creator: {{this.user_name}}
                 </p>
                 <div class="techs mb-3">
                   {{#if this.technologies.[0]}} <i class="fa-brands fa-html5"></i> {{/if}}

@@ -66,8 +66,8 @@
     <div
       class="container-project-form d-flex justify-content-center align-items-center bg-whitesmoke pb-5"
     >
-      <form action="/edit-project/{{id}}" class="m-0" method="POST">
-        <h2 class="text-center mb-3 mt-3 fw-bold">EDIT MY PROJECT</h2>
+      <form action="/edit-project/{{id}}" class="m-0" method="POST" enctype='multipart/form-data'>
+        <h2 class="text-center mb-3 mt-5 fw-bold">EDIT MY PROJECT</h2>
         <div class="mb-3">
           <label for="input-project-name" class="form-label">Project Name</label>
           <input
@@ -161,12 +161,16 @@
           </div>
         </div>
         <div class="mb-3">
-          <label for="input-image" class="form-label">Upload Image</label>
+          <label for="validationDefault01" class="form-label">Upload Image</label>
+          <div class="mb-3">
+          <img src="{{project.image}}" style="max-width:100px" alt="">
+          </div>
           <input
             class="form-control"
             type="file"
-            id="input-image"
+            id="validationDefault01"
             name="image"
+            required
           />
         </div>
         <div class="text-end mt-3">
