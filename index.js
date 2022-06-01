@@ -96,12 +96,12 @@ app.get("/contact-me", (req, res) => {
 
 app.post("/contact-me", (req, res) => {
   const data = req.body;
-  // console.log(data);
+
   let mailOptions = {
     from: 'erikaelliyyin2108@gmail.com',
-    to: data["email"],
+    to: 'erikaelliyin21@gmail.com',
     subject: data["subject"],
-    text: data["message"],
+    text: `Hi, my name is ${data["name"]}. ${data["subject"]}, ${data["message"]}. Let me hear from you soon, please contact me at ${data["email"]} or on ${data["phone"]}.`,
   };
 
   transporter.sendMail(mailOptions, function(e) {
