@@ -247,7 +247,7 @@ app.get("/detail-project/:id", (req, res) => {
   });
 });
 
-app.post("/edit-project/:id", (req, res) => {
+app.post("/edit-project/:id", upload.single('image'), (req, res) => {
   id = req.params.id;
   const name = req.body.name;
   const start_date = req.body.startDate;
